@@ -1,16 +1,7 @@
 import "dotenv/config";
-import Fastify from "fastify";
+
 import sequelize from "./db/index.js";
-
-const app = Fastify({
-  logger: true,
-});
-
-app.get("/health", async () => {
-  return {
-    status: "ok",
-  };
-});
+import app from "./app.js";
 
 const start = async () => {
   try {
