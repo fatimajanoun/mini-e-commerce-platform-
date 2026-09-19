@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: mini-ecommerce-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./apps/api
+    container_name: mini-ecommerce-api
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${API_PORT}
+      DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - "${API_PORT}:3000"
+    depends_on:
+      - postgres
+
+  web:
+    build:
+      context: ./apps/web
+    container_name: mini-ecommerce-web
+    ports:
+      - "${WEB_PORT}:5173"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
