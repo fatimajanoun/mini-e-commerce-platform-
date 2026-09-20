@@ -5,6 +5,7 @@ import { authRoutes } from "./modules/auth/auth.routes.js";
 import authPlugin from "./plugins/auth.plugin.js";
 import { productRoutes } from "./modules/products/product.routes.js";
 import "./db/models/associations.js";
+import { cartRoutes } from "./modules/carts/cart.routes.js";
 
 const app = Fastify({
   logger: true,
@@ -23,6 +24,10 @@ await app.register(authRoutes, {
 
 app.register(productRoutes, {
   prefix: "/products",
+});
+
+app.register(cartRoutes, {
+  prefix: "/cart",
 });
 
 app.get("/health", async () => {
