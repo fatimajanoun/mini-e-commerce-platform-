@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import User from "../../db/models/user.js";
+import User from "../../db/models/User.js";
 
 export const login = async (email: string, password: string) => {
   const user = await User.findOne({

@@ -4,7 +4,7 @@ import cookie from "@fastify/cookie";
 import jwt from "@fastify/jwt";
 import bcrypt from "bcrypt";
 
-import User from "../../db/models/user.js";
+import User from "../../db/models/User.js";
 import { login } from "./auth.service.js";
 import { authRoutes } from "./auth.routes.js";
 
