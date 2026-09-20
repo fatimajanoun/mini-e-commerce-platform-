@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./components/auth/ProtectedRoutes";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
 
 function App() {
   return (
@@ -12,6 +13,10 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<HomePage />} />
+          <Route
+            path="/products/:slug"
+            element={<ProductDetailsPage />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

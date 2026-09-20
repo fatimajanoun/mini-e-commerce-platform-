@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Product } from "../../services/products";
 
 interface ProductCardProps {
@@ -6,7 +7,11 @@ interface ProductCardProps {
 
 function ProductCard({ product }: ProductCardProps) {
   return (
-    <article className="product-card">
+    <Link
+      to={`/products/${product.slug}`}
+      className="product-card"
+    >
+
       <div className="product-card-image">
         {product.image ? (
           <img
@@ -40,7 +45,7 @@ function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
       </div>
-    </article>
+      </Link>
   );
 }
 
