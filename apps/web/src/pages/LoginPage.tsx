@@ -2,7 +2,7 @@ import LoginForm from "../components/auth/LoginForm";
 
 export default function LoginPage() {
   function handleLoginSuccess() {
-    console.log("Login successful");
+   window.location.href = "/home";
   }
 
   return (
