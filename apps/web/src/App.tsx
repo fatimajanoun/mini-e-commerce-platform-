@@ -1,7 +1,21 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import ProtectedRoute from "./components/auth/ProtectedRoutes";
 
 function App() {
-  return <LoginPage />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/home" element={<HomePage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
