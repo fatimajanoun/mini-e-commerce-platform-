@@ -32,6 +32,26 @@ export default {
         defaultValue: "confirmed",
       },
 
+      name: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+
+      phone: {
+        type: Sequelize.STRING(50),
+        allowNull: false,
+      },
+
+      address: {
+        type: Sequelize.STRING(500),
+        allowNull: false,
+      },
+
+      city: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
