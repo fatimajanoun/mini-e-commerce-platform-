@@ -13,7 +13,7 @@ export default function LoginPage() {
 
           <div className="image-copy">
             <p>THE COLLECTION</p>
-            <h2>Where elegance<br />meets simplicity.</h2>
+            <h2>Where every scent<br />tells a story.</h2>
           </div>
         </div>
       </section>

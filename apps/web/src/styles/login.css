@@ -16,7 +16,7 @@
 .login-image {
   position: relative;
   min-height: 100vh;
-  background-image: url("../../public/login.png");
+  background-image: url("../../public/login-image.png");
   background-size: cover;
   background-position: center;
   background-color: var(--color-image-background);
