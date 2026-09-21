@@ -328,7 +328,7 @@ export default {
         product_id: "10000000-0000-4000-8000-000000000005",
         variant_id: null,
         image_url:
-          "https://images.unsplash.com/photo-1590736969955-71cc94901144?w=800",
+          "https://upload.wikimedia.org/wikipedia/commons/2/27/J%E2%80%99adore_Eau_Lumiere.jpg",
         is_primary: true,
         created_at: now,
       },
@@ -373,7 +373,7 @@ export default {
         product_id: "10000000-0000-4000-8000-000000000010",
         variant_id: null,
         image_url:
-          "https://images.unsplash.com/photo-1523293836415-4f2f2e0d3f52?w=800",
+          "https://f.nooncdn.com/p/pzsku/ZC02D39CAD52D09104CE0Z/45/_/1779345522/581d6c78-afdb-48fb-991f-19d7d1c119e1.jpg",
         is_primary: true,
         created_at: now,
       },
@@ -382,7 +382,7 @@ export default {
         product_id: "10000000-0000-4000-8000-000000000011",
         variant_id: null,
         image_url:
-          "https://images.unsplash.com/photo-1566977776052-6e61e35bf9f5?w=800",
+          "https://www.lanboutique.com/cdn/shop/products/Lancome_LaVieEstBelle_50_LDP.jpg?v=1775065126",
         is_primary: true,
         created_at: now,
       },
@@ -391,7 +391,7 @@ export default {
         product_id: "10000000-0000-4000-8000-000000000012",
         variant_id: null,
         image_url:
-          "https://images.unsplash.com/photo-1595425964078-5f3e8c6c1c4f?w=800",
+          "https://media.douglas.pl/medias/o1vQBM455949-0-global.jpg?context=bWFzdGVyfGltYWdlc3w5ODc5N3xpbWFnZS9qcGVnfGFHWXdMMmd5TUM4Mk16WTBNVEUwTWpFNU9ETXdNaTl2TVhaUlFrMDBOVFU1TkRsZk1GOW5iRzlpWVd3dWFuQm58M2ViOGIxMDhiNjUwMzI3MWYwNThhNWZiZGFjYjYxYjA4NjE1ZjUwMGQwOTljNmE4OGI4MWYyN2NlZjI5Nzg4OQ&grid=true",
         is_primary: true,
         created_at: now,
       },
@@ -409,7 +409,7 @@ export default {
         product_id: "10000000-0000-4000-8000-000000000014",
         variant_id: null,
         image_url:
-          "https://images.unsplash.com/photo-1619994403073-2f6c1b7a4d3e?w=800",
+          "https://img.kingpowerclick.com/cdn-cgi/image/format=auto/kingpower-com/image/upload/w_640/v1650426757/prod/897498-L1.jpg",
         is_primary: true,
         created_at: now,
       },

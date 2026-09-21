@@ -186,24 +186,6 @@ function ProductCard({ product }: ProductCardProps) {
       <div className="product-card-actions">
         <button
           type="button"
-          className="product-wishlist-button"
-          aria-label={
-            isInWishlist
-              ? `Remove ${product.title} from wishlist`
-              : `Add ${product.title} to wishlist`
-          }
-          onClick={handleWishlistToggle}
-          disabled={wishlistLoading}
-        >
-          <Heart
-            size={18}
-            strokeWidth={1.5}
-            fill={isInWishlist ? "currentColor" : "none"}
-          />
-        </button>
-
-        <button
-          type="button"
           className={`product-cart-button ${addedToCart ? "added" : ""
             } ${isOutOfStock ? "out-of-stock" : ""}`}
           onClick={handleAddToCart}
@@ -223,6 +205,24 @@ function ProductCard({ product }: ProductCardProps) {
               Add to cart
             </>
           )}
+        </button>
+
+        <button
+          type="button"
+          className="product-wishlist-button"
+          aria-label={
+            isInWishlist
+              ? `Remove ${product.title} from wishlist`
+              : `Add ${product.title} to wishlist`
+          }
+          onClick={handleWishlistToggle}
+          disabled={wishlistLoading}
+        >
+          <Heart
+            size={18}
+            strokeWidth={1.5}
+            fill={isInWishlist ? "currentColor" : "none"}
+          />
         </button>
       </div>
     </article>
