@@ -15,6 +15,7 @@ const app = Fastify({
 await app.register(cors, {
   origin: "http://localhost:5173",
   credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 });
 
 await app.register(authPlugin);

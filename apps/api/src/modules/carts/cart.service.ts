@@ -2,6 +2,7 @@ import Cart from "../../db/models/Cart.js";
 import CartItem from "../../db/models/CartItem.js";
 import Product from "../../db/models/Product.js";
 import Variant from "../../db/models/Variant.js";
+import ProductImage from "../../db/models/ProductImage.js";
 
 type CartItemWithRelations = {
   id: string;
@@ -10,12 +11,29 @@ type CartItemWithRelations = {
     id: string;
     title: string;
     price: string | number;
+    images?: {
+      id: string;
+      image_url: string;
+      is_primary: boolean;
+    }[];
+    variants?: {
+      id: string;
+      name: string;
+      value: string;
+      price: string | number | null;
+      stock: number;
+    }[];
   };
   variant: {
     id: string;
     name: string;
     value: string;
     price: string | number | null;
+    images?: {
+      id: string;
+      image_url: string;
+      is_primary: boolean;
+    }[];
   } | null;
 };
 
@@ -44,11 +62,35 @@ export const getCart = async (userId: string) => {
             model: Product,
             as: "product",
             attributes: ["id", "title", "price"],
+            include: [
+              {
+                model: ProductImage,
+                as: "images",
+                attributes: ["id", "image_url", "is_primary"],
+                where: {
+                  variant_id: null,
+                },
+                required: false,
+              },
+              {
+                model: Variant,
+                as: "variants",
+                attributes: ["id", "name", "value", "price"],
+              },
+            ],
           },
           {
             model: Variant,
             as: "variant",
             attributes: ["id", "name", "value", "price"],
+            include: [
+              {
+                model: ProductImage,
+                as: "images",
+                attributes: ["id", "image_url", "is_primary"],
+                required: false,
+              },
+            ],
           },
         ],
       },
@@ -71,6 +113,16 @@ export const getCart = async (userId: string) => {
     const subtotal =
       Number(unitPrice) * item.quantity;
 
+    const image =
+      item.variant?.images?.find(
+        (image) => image.is_primary,
+      ) ??
+      item.variant?.images?.[0] ??
+      item.product.images?.find(
+        (image) => image.is_primary,
+      ) ??
+      item.product.images?.[0] ??
+      null;
     return {
       id: item.id,
 
@@ -78,18 +130,36 @@ export const getCart = async (userId: string) => {
         id: item.product.id,
         title: item.product.title,
         price: Number(item.product.price),
+        image: image
+          ? {
+            id: image.id,
+            url: image.image_url,
+          }
+          : null,
+
+        variants:
+          item.product.variants?.map((variant) => ({
+            id: variant.id,
+            name: variant.name,
+            value: variant.value,
+            price:
+              variant.price !== null
+                ? Number(variant.price)
+                : null,
+            stock: variant.stock,
+          })) ?? [],
       },
 
       variant: item.variant
         ? {
-            id: item.variant.id,
-            name: item.variant.name,
-            value: item.variant.value,
-            price:
-              item.variant.price !== null
-                ? Number(item.variant.price)
-                : null,
-          }
+          id: item.variant.id,
+          name: item.variant.name,
+          value: item.variant.value,
+          price:
+            item.variant.price !== null
+              ? Number(item.variant.price)
+              : null,
+        }
         : null,
 
       quantity: item.quantity,

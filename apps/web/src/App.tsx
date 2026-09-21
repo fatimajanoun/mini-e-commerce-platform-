@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./components/auth/ProtectedRoutes";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
+import CartPage from "./pages/CartPage";
 
 function App() {
   return (
@@ -16,6 +17,10 @@ function App() {
           <Route
             path="/products/:slug"
             element={<ProductDetailsPage />}
+          />
+          <Route
+            path="/cart"
+            element={<CartPage />}
           />
         </Route>
       </Routes>
