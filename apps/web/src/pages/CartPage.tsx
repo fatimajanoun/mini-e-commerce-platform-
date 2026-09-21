@@ -3,8 +3,11 @@ import CartItem from "../components/cart/cartItem";
 import { getCart } from "../services/cart";
 import type { CartResponse } from "../services/cart";
 import "../styles/cartPage.css";
+import { useNavigate } from "react-router-dom";
 
 export default function CartPage() {
+    const navigate = useNavigate();
+
     const [cart, setCart] = useState<CartResponse>({
         items: [],
         total: 0,
@@ -99,6 +102,7 @@ export default function CartPage() {
                             <button
                                 type="button"
                                 className="cart-checkout-button"
+                                onClick={() => navigate("/checkout")}
                             >
                                 Checkout
                             </button>
