@@ -21,6 +21,16 @@ export default {
         onDelete: "CASCADE",
       },
 
+       subtotal: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+      },
+
+      shipping_fee: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+      },
+
       total_amount: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,

@@ -16,6 +16,17 @@ const Order = sequelize.define(
       allowNull: false,
     },
 
+    subtotal: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
+
+    shipping_fee: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 5.0,
+    },
+
     total_amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
