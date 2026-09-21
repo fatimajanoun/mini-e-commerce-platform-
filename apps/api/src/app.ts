@@ -7,6 +7,7 @@ import { productRoutes } from "./modules/products/product.routes.js";
 import "./db/models/associations.js";
 import { cartRoutes } from "./modules/carts/cart.routes.js";
 import { wishlistRoutes } from "./modules/wishlist/wishlist.routes.js";
+import { orderRoutes } from "./modules/orders/order.route.js";
 
 const app = Fastify({
   logger: true,
@@ -35,6 +36,10 @@ app.register(cartRoutes, {
 app.register(wishlistRoutes, {
   prefix: "/wishlist",
 });
+
+app.register(orderRoutes,{
+  prefix: "/order"
+})
 
 app.get("/health", async () => {
   return { status: "ok" };
