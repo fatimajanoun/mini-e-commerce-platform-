@@ -5,7 +5,11 @@ import {
   type ProductDetails,
 } from "../services/products";
 import { addCartItem } from "../services/cart";
-import { addToWishlist } from "../services/wishlist";
+import {
+  getWishlist,
+  addToWishlist,
+  removeFromWishlist,
+} from "../services/wishlist";
 import "../styles/product-details.css";
 
 function ProductDetailsPage() {
@@ -20,7 +24,7 @@ function ProductDetailsPage() {
   );
 
   const [addingToWishlist, setAddingToWishlist] = useState(false);
-  const [addedToWishlist, setAddedToWishlist] = useState(false);
+  const [wishlistItemId, setWishlistItemId] = useState<string | null>(null);
 
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -37,6 +41,13 @@ function ProductDetailsPage() {
         const data = await getProductBySlug(slug!);
 
         setProduct(data);
+
+        const wishlist = await getWishlist();
+        const wishlistItem = wishlist.items.find(
+          (item) => item.product.id === data.id,
+        );
+
+        setWishlistItemId(wishlistItem?.id ?? null);
 
         if (data.variants.length > 0) {
           const firstAvailableVariant = data.variants.find(
@@ -142,26 +153,42 @@ function ProductDetailsPage() {
     }
   };
 
-  const handleAddToWishlist = async () => {
-    if (addingToWishlist || addedToWishlist) {
+  const handleWishlistToggle = async () => {
+    if (addingToWishlist) {
       return;
     }
 
     try {
       setAddingToWishlist(true);
 
-      await addToWishlist(product.id);
+      if (wishlistItemId) {
+        await removeFromWishlist(wishlistItemId);
 
-      setAddedToWishlist(true);
+        setWishlistItemId(null);
+      } else {
+        const wishlist = await getWishlist();
 
-      setTimeout(() => {
-        setAddedToWishlist(false);
-      }, 2000);
+        const existingItem = wishlist.items.find(
+          (item) => item.product.id === product.id,
+        );
+
+        if (existingItem) {
+          setWishlistItemId(existingItem.id);
+          return;
+        }
+
+        await addToWishlist(product.id);
+
+        const updatedWishlist = await getWishlist();
+
+        const addedItem = updatedWishlist.items.find(
+          (item) => item.product.id === product.id,
+        );
+
+        setWishlistItemId(addedItem?.id ?? null);
+      }
     } catch (err) {
-      console.error(
-        "Failed to add product to wishlist:",
-        err,
-      );
+      console.error("Failed to update wishlist:", err);
     } finally {
       setAddingToWishlist(false);
     }
@@ -292,13 +319,15 @@ function ProductDetailsPage() {
               <button
                 type="button"
                 className="add-to-wishlist-button"
-                onClick={handleAddToWishlist}
-                disabled={addingToWishlist || addedToWishlist}
+                onClick={handleWishlistToggle}
+                disabled={addingToWishlist}
               >
                 {addingToWishlist
-                  ? "Adding..."
-                  : addedToWishlist
-                    ? "✓ Added to Wishlist"
+                  ? wishlistItemId
+                    ? "Removing..."
+                    : "Adding..."
+                  : wishlistItemId
+                    ? "♥ Remove from Wishlist"
                     : "♡ Add to Wishlist"}
               </button>
             </div>
