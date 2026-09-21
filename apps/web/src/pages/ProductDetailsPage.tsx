@@ -4,6 +4,7 @@ import {
   getProductBySlug,
   type ProductDetails,
 } from "../services/products";
+import { addCartItem } from "../services/cart";
 import "../styles/product-details.css";
 
 function ProductDetailsPage() {
@@ -18,6 +19,8 @@ function ProductDetailsPage() {
   );
 
   const [quantity, setQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -32,7 +35,13 @@ function ProductDetailsPage() {
         setProduct(data);
 
         if (data.variants.length > 0) {
-          setSelectedVariant(data.variants[0].id);
+          const firstAvailableVariant = data.variants.find(
+            (variant) => variant.stock > 0,
+          );
+
+          setSelectedVariant(
+            firstAvailableVariant?.id ?? data.variants[0].id,
+          );
         }
       } catch (err) {
         setError(
@@ -68,7 +77,16 @@ function ProductDetailsPage() {
     );
   }
 
-  const maxQuantity = product.stock ?? 0;
+  const selectedVariantData = product.variants.find(
+    (variant) => variant.id === selectedVariant,
+  );
+
+  const maxQuantity =
+    product.variants.length > 0
+      ? selectedVariantData?.stock ?? 0
+      : product.stock ?? 0;
+
+  const isOutOfStock = maxQuantity <= 0;
 
   const handleQuantityDecrease = () => {
     setQuantity((current) => Math.max(1, current - 1));
@@ -80,12 +98,41 @@ function ProductDetailsPage() {
     );
   };
 
-  const handleAddToCart = () => {
-    console.log("Add to cart:", {
-      productId: product.id,
-      variantId: selectedVariant,
-      quantity,
-    });
+  const handleVariantChange = (variantId: string) => {
+    setSelectedVariant(variantId);
+    setQuantity(1);
+    setAddedToCart(false);
+  };
+
+  const handleAddToCart = async () => {
+    if (
+      addingToCart ||
+      addedToCart ||
+      isOutOfStock ||
+      (product.variants.length > 0 && !selectedVariant)
+    ) {
+      return;
+    }
+
+    try {
+      setAddingToCart(true);
+
+      await addCartItem({
+        productId: product.id,
+        variantId: selectedVariant ?? undefined,
+        quantity,
+      });
+
+      setAddedToCart(true);
+
+      setTimeout(() => {
+        setAddedToCart(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to add product to cart:", err);
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   const handleAddToWishlist = () => {
@@ -128,9 +175,9 @@ function ProductDetailsPage() {
           </p>
 
           <div className="product-details-stock">
-            {maxQuantity > 0
-              ? `${maxQuantity} available in stock`
-              : "Out of stock"}
+            {isOutOfStock
+              ? "Out of stock"
+              : `${maxQuantity} available in stock`}
           </div>
 
           {product.variants.length > 0 && (
@@ -138,23 +185,28 @@ function ProductDetailsPage() {
               <h3>Options</h3>
 
               <div className="product-options">
-                {product.variants.map((variant) => (
-                  <button
-                    key={variant.id}
-                    type="button"
-                    className={`product-option ${
-                      selectedVariant === variant.id
-                        ? "selected"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      setSelectedVariant(variant.id);
-                      setQuantity(1);
-                    }}
-                  >
-                    {variant.value}
-                  </button>
-                ))}
+                {product.variants.map((variant) => {
+                  const variantOutOfStock = variant.stock <= 0;
+
+                  return (
+                    <button
+                      key={variant.id}
+                      type="button"
+                      className={`product-option ${
+                        selectedVariant === variant.id
+                          ? "selected"
+                          : ""
+                      } ${variantOutOfStock ? "out-of-stock" : ""}`}
+                      onClick={() => {
+                        if (variantOutOfStock) return;
+                        handleVariantChange(variant.id);
+                      }}
+                      disabled={variantOutOfStock}
+                    >
+                      {variant.value}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -169,7 +221,7 @@ function ProductDetailsPage() {
                 <button
                   type="button"
                   onClick={handleQuantityDecrease}
-                  disabled={quantity <= 1}
+                  disabled={quantity <= 1 || isOutOfStock}
                 >
                   −
                 </button>
@@ -180,7 +232,7 @@ function ProductDetailsPage() {
                   type="button"
                   onClick={handleQuantityIncrease}
                   disabled={
-                    maxQuantity === 0 ||
+                    isOutOfStock ||
                     quantity >= maxQuantity
                   }
                 >
@@ -192,13 +244,23 @@ function ProductDetailsPage() {
             <div className="product-actions">
               <button
                 type="button"
-                className="add-to-cart-button"
-                disabled={maxQuantity === 0}
+                className={`add-to-cart-button ${
+                  addedToCart ? "added" : ""
+                }`}
+                disabled={
+                  addingToCart ||
+                  addedToCart ||
+                  isOutOfStock
+                }
                 onClick={handleAddToCart}
               >
-                {maxQuantity === 0
-                  ? "Out of Stock"
-                  : "Add to Cart"}
+                {addingToCart
+                  ? "Adding..."
+                  : addedToCart
+                    ? "✓ Added to Cart"
+                    : isOutOfStock
+                      ? "Out of Stock"
+                      : "Add to Cart"}
               </button>
 
               <button
