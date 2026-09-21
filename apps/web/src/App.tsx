@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoutes";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import CartPage from "./pages/CartPage";
 import MainLayout from "./components/layout/MainLayout";
+import WishlistPage from "./pages/wishlistPage";
 
 function App() {
   return (
@@ -14,16 +15,20 @@ function App() {
         <Route path="/" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute />}>
-        <Route element={<MainLayout />}>
-          <Route path="/home" element={<HomePage />} />
-          <Route
-            path="/products/:slug"
-            element={<ProductDetailsPage />}
-          />
-          <Route
-            path="/cart"
-            element={<CartPage />}
-          />
+          <Route element={<MainLayout />}>
+            <Route path="/home" element={<HomePage />} />
+            <Route
+              path="/products/:slug"
+              element={<ProductDetailsPage />}
+            />
+            <Route
+              path="/cart"
+              element={<CartPage />}
+            />
+            <Route
+              path="/wishlist"
+              element={<WishlistPage />}
+            />
           </Route>
         </Route>
       </Routes>

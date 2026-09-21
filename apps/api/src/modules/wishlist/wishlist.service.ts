@@ -1,6 +1,8 @@
 import Wishlist from "../../db/models/Wishlist.js";
 import WishlistItem from "../../db/models/WishlistItem.js";
 import Product from "../../db/models/Product.js";
+import ProductImage from "../../db/models/ProductImage.js";
+import Variant from "../../db/models/Variant.js";
 
 type WishlistItemWithProduct = {
   id: string;
@@ -8,7 +10,19 @@ type WishlistItemWithProduct = {
     id: string;
     slug: string;
     title: string;
+    stock: number | null;
     price: string | number;
+    images: {
+      id: string;
+      image_url: string;
+    }[];
+     variants: {
+      id: string;
+      name: string;
+      value: string;
+      price: string | number | null;
+      stock: number;
+    }[];
   };
 };
 
@@ -29,7 +43,27 @@ export const getWishlist = async (userId: string) => {
               "id",
               "slug",
               "title",
+              "stock",
               "price",
+            ],
+              include: [
+              {
+                model: Variant,
+                as: "variants",
+
+                attributes: [
+                  "id",
+                  "name",
+                  "value",
+                  "price",
+                  "stock",
+                ],
+              },
+              {
+                model: ProductImage,
+                as: "images",
+                attributes: ["id", "image_url"],
+              },
             ],
           },
         ],
@@ -51,7 +85,25 @@ export const getWishlist = async (userId: string) => {
       id: item.product.id,
       slug: item.product.slug,
       title: item.product.title,
+      stock: item.product.stock,
       price: Number(item.product.price),
+      image: item.product.images?.[0]
+      ? {
+          id: item.product.images[0].id,
+          url: item.product.images[0].image_url,
+        }
+      : null,
+       variants:
+        item.product.variants?.map((variant) => ({
+          id: variant.id,
+          name: variant.name,
+          value: variant.value,
+          price:
+            variant.price !== null
+              ? Number(variant.price)
+              : null,
+          stock: variant.stock,
+        })) ?? [],
     },
   }));
 

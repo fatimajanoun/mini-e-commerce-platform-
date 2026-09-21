@@ -5,6 +5,7 @@ import {
   type ProductDetails,
 } from "../services/products";
 import { addCartItem } from "../services/cart";
+import { addToWishlist } from "../services/wishlist";
 import "../styles/product-details.css";
 
 function ProductDetailsPage() {
@@ -17,6 +18,9 @@ function ProductDetailsPage() {
   const [selectedVariant, setSelectedVariant] = useState<string | null>(
     null,
   );
+
+  const [addingToWishlist, setAddingToWishlist] = useState(false);
+  const [addedToWishlist, setAddedToWishlist] = useState(false);
 
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -88,6 +92,9 @@ function ProductDetailsPage() {
 
   const isOutOfStock = maxQuantity <= 0;
 
+  const hasVariants =
+    product.variants.length > 0;
+
   const handleQuantityDecrease = () => {
     setQuantity((current) => Math.max(1, current - 1));
   };
@@ -135,8 +142,29 @@ function ProductDetailsPage() {
     }
   };
 
-  const handleAddToWishlist = () => {
-    console.log("Add to wishlist:", product.id);
+  const handleAddToWishlist = async () => {
+    if (addingToWishlist || addedToWishlist) {
+      return;
+    }
+
+    try {
+      setAddingToWishlist(true);
+
+      await addToWishlist(product.id);
+
+      setAddedToWishlist(true);
+
+      setTimeout(() => {
+        setAddedToWishlist(false);
+      }, 2000);
+    } catch (err) {
+      console.error(
+        "Failed to add product to wishlist:",
+        err,
+      );
+    } finally {
+      setAddingToWishlist(false);
+    }
   };
 
   return (
@@ -192,11 +220,10 @@ function ProductDetailsPage() {
                     <button
                       key={variant.id}
                       type="button"
-                      className={`product-option ${
-                        selectedVariant === variant.id
-                          ? "selected"
-                          : ""
-                      } ${variantOutOfStock ? "out-of-stock" : ""}`}
+                      className={`product-option ${selectedVariant === variant.id
+                        ? "selected"
+                        : ""
+                        } ${variantOutOfStock ? "out-of-stock" : ""}`}
                       onClick={() => {
                         if (variantOutOfStock) return;
                         handleVariantChange(variant.id);
@@ -244,9 +271,8 @@ function ProductDetailsPage() {
             <div className="product-actions">
               <button
                 type="button"
-                className={`add-to-cart-button ${
-                  addedToCart ? "added" : ""
-                }`}
+                className={`add-to-cart-button ${addedToCart ? "added" : ""
+                  }`}
                 disabled={
                   addingToCart ||
                   addedToCart ||
@@ -267,8 +293,13 @@ function ProductDetailsPage() {
                 type="button"
                 className="add-to-wishlist-button"
                 onClick={handleAddToWishlist}
+                disabled={addingToWishlist || addedToWishlist}
               >
-                ♡ Add to Wishlist
+                {addingToWishlist
+                  ? "Adding..."
+                  : addedToWishlist
+                    ? "✓ Added to Wishlist"
+                    : "♡ Add to Wishlist"}
               </button>
             </div>
           </div>
