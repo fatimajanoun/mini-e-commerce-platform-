@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./components/auth/ProtectedRoutes";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import CartPage from "./pages/CartPage";
+import MainLayout from "./components/layout/MainLayout";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute />}>
+        <Route element={<MainLayout />}>
           <Route path="/home" element={<HomePage />} />
           <Route
             path="/products/:slug"
@@ -22,6 +24,7 @@ function App() {
             path="/cart"
             element={<CartPage />}
           />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

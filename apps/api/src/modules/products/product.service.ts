@@ -15,6 +15,7 @@ export const getProducts = async ({
             "id",
             "slug",
             "title",
+            "stock",
             "price",
             "created_at",
         ],
@@ -27,6 +28,7 @@ export const getProducts = async ({
                     "id",
                     "name",
                     "value",
+                    "stock",
                 ],
             },
             {
@@ -62,7 +64,7 @@ export const getProducts = async ({
             slug: productData.slug,
             title: productData.title,
             price: productData.price,
-
+            stock: productData.stock,
             image: productData.images?.[0]
                 ? {
                     id: productData.images[0].id,

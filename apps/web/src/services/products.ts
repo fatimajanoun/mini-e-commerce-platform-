@@ -2,6 +2,7 @@ export interface ProductVariant {
   id: string;
   name: string;
   value: string;
+  stock:number;
 }
 
 export interface ProductImage {
@@ -14,6 +15,7 @@ export interface Product {
   slug: string;
   title: string;
   price: string;
+  stock: number | null;
   image: ProductImage | null;
   variants: ProductVariant[];
 }
