@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, Heart, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Product } from "../../services/products";
 import { addCartItem } from "../../services/cart";
 import "../../styles/ProductCard.css";
+import {
+  addToWishlist,
+  getWishlist,
+  removeFromWishlist,
+} from "../../services/wishlist";
 
 interface ProductCardProps {
   product: Product;
@@ -20,6 +25,36 @@ function ProductCard({ product }: ProductCardProps) {
 
   const [addedToCart, setAddedToCart] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [wishlistItemId, setWishlistItemId] =
+    useState<string | null>(null);
+  const [wishlistLoading, setWishlistLoading] =
+    useState(false);
+
+  useEffect(() => {
+    async function checkWishlist() {
+      try {
+        const wishlist = await getWishlist();
+
+        const wishlistItem = wishlist.items.find(
+          (item) => item.product.id === product.id,
+        );
+
+        if (wishlistItem) {
+          setIsInWishlist(true);
+          setWishlistItemId(wishlistItem.id);
+        }
+      } catch (error) {
+        console.error(
+          "Failed to check wishlist:",
+          error,
+        );
+      }
+    }
+
+    checkWishlist();
+  }, [product.id]);
 
   const selectedVariant = product.variants.find(
     (variant) => variant.id === selectedVariantId,
@@ -63,6 +98,43 @@ function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const handleWishlistToggle = async () => {
+    if (wishlistLoading) {
+      return;
+    }
+
+    try {
+      setWishlistLoading(true);
+
+      if (isInWishlist && wishlistItemId) {
+        await removeFromWishlist(wishlistItemId);
+
+        setIsInWishlist(false);
+        setWishlistItemId(null);
+      } else {
+        await addToWishlist(product.id);
+
+        const wishlist = await getWishlist();
+
+        const wishlistItem = wishlist.items.find(
+          (item) => item.product.id === product.id,
+        );
+
+        if (wishlistItem) {
+          setIsInWishlist(true);
+          setWishlistItemId(wishlistItem.id);
+        }
+      }
+    } catch (error) {
+      console.error(
+        "Failed to update wishlist:",
+        error,
+      );
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
   return (
     <article className="product-card">
       <Link to={`/products/${product.slug}`} className="product-card-link">
@@ -88,9 +160,8 @@ function ProductCard({ product }: ProductCardProps) {
                   <button
                     key={variant.id}
                     type="button"
-                    className={`product-variant ${
-                      selectedVariantId === variant.id ? "selected" : ""
-                    } ${variantOutOfStock ? "out-of-stock" : ""}`}
+                    className={`product-variant ${selectedVariantId === variant.id ? "selected" : ""
+                      } ${variantOutOfStock ? "out-of-stock" : ""}`}
                     onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();
@@ -116,16 +187,25 @@ function ProductCard({ product }: ProductCardProps) {
         <button
           type="button"
           className="product-wishlist-button"
-          aria-label={`Add ${product.title} to wishlist`}
+          aria-label={
+            isInWishlist
+              ? `Remove ${product.title} from wishlist`
+              : `Add ${product.title} to wishlist`
+          }
+          onClick={handleWishlistToggle}
+          disabled={wishlistLoading}
         >
-          <Heart size={18} strokeWidth={1.5} />
+          <Heart
+            size={18}
+            strokeWidth={1.5}
+            fill={isInWishlist ? "currentColor" : "none"}
+          />
         </button>
 
         <button
           type="button"
-          className={`product-cart-button ${
-            addedToCart ? "added" : ""
-          } ${isOutOfStock ? "out-of-stock" : ""}`}
+          className={`product-cart-button ${addedToCart ? "added" : ""
+            } ${isOutOfStock ? "out-of-stock" : ""}`}
           onClick={handleAddToCart}
           disabled={loading || addedToCart || isOutOfStock}
         >
