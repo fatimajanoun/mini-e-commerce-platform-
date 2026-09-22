@@ -363,3 +363,24 @@ export const updateCartItem = async (
 
   return item;
 };
+
+export const getCartCount = async (userId: string) => {
+    const cart = await Cart.findOne({
+        where: {
+            user_id: userId,
+        },
+        attributes: ["id"],
+    });
+
+    if (!cart) {
+        return 0;
+    }
+
+    const count = await CartItem.count({
+        where: {
+            cart_id: cart.get("id") as string,
+        },
+    });
+
+    return count;
+};

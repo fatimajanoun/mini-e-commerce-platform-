@@ -46,4 +46,12 @@ export const cartRoutes = async (
         },
         cartController.updateCartItem,
     );
+
+    app.get(
+        "/count",
+        {
+            preHandler: [authenticate],
+        },
+        cartController.getCartCount,
+    );
 };

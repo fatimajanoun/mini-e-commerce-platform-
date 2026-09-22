@@ -127,3 +127,19 @@ export async function deleteCartItem(
     );
   }
 }
+
+export async function getCartCount(): Promise<number> {
+  const response = await fetch(`${API_URL}/cart/count`, {
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result.message || "Failed to fetch cart count",
+    );
+  }
+
+  return result.count;
+}

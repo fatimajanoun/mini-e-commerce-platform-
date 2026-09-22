@@ -28,4 +28,12 @@ export const wishlistRoutes = async (
         },
         wishlistController.deleteWishlistItem,
     );
+
+    app.get(
+        "/count",
+        {
+            preHandler: [authenticate],
+        },
+        wishlistController.getWishlistCount,
+    );
 };

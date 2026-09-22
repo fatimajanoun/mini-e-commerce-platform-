@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 
-import { addCartItem, deleteCartItem, getCart, updateCartItem } from "./cart.service.js";
+import { addCartItem, deleteCartItem, getCart, getCartCount, updateCartItem } from "./cart.service.js";
 
 export const cartController = {
   getCart: async (
@@ -160,4 +160,27 @@ updateCartItem: async (
     });
   }
 },
+
+getCartCount: async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ) => {
+    try {
+      const { userId } = request.user as {
+        userId: string;
+      };
+
+      const count = await getCartCount(userId);
+
+      return reply.send({
+        count,
+      });
+    } catch (error) {
+      console.error("GET /cart/count error:", error);
+
+      return reply.status(500).send({
+        message: "Failed to fetch cart count",
+      });
+    }
+  },
 };

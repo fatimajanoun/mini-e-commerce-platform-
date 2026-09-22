@@ -3,6 +3,7 @@ import {
     getWishlist,
     addWishlistItem,
     deleteWishlistItem,
+    getWishlistCount,
 } from "./wishlist.service.js";
 
 export const wishlistController = {
@@ -112,6 +113,32 @@ export const wishlistController = {
 
             return reply.status(500).send({
                 message: "Failed to remove wishlist item",
+            });
+        }
+    },
+
+    getWishlistCount: async (
+        request: FastifyRequest,
+        reply: FastifyReply,
+    ) => {
+        try {
+            const { userId } = request.user as {
+                userId: string;
+            };
+
+            const count = await getWishlistCount(userId);
+
+            return reply.send({
+                count,
+            });
+        } catch (error) {
+            console.error(
+                "GET /wishlist/count error:",
+                error,
+            );
+
+            return reply.status(500).send({
+                message: "Failed to fetch wishlist count",
             });
         }
     },
