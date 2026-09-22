@@ -23,7 +23,13 @@ A full-stack e-commerce application built with **React, TypeScript, Node.js, Fas
 
 ## How to Run
 
-### 1. Prerequisites
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/fatimajanoun/mini-e-commerce-platform-.git
+cd mini-e-commerce-platform-
+```
+### 2. Prerequisites
 
 Make sure you have:
 
@@ -31,7 +37,7 @@ Make sure you have:
 * npm
 * Docker Desktop
 
-### 2. Configure Environment Variables
+### 3. Configure Environment Variables
 
 Create a `.env` file in the project root:
 
@@ -47,13 +53,11 @@ WEB_PORT=5173
 
 DATABASE_URL=postgresql://postgres:your_password@postgres:5432/mini_ecommerce
 JWT_SECRET=your_jwt_secret
-
-Replace your_password with your PostgreSQL password and your_jwt_secret with a secure secret used to sign JWT tokens.
 ```
 
-Replace `your_password` with your PostgreSQL password.
+Replace your_password with your PostgreSQL password and your_jwt_secret with a secure secret used to sign JWT tokens.
 
-### 3. Start the Application
+### 4. Start the Application
 
 From the project root:
 
@@ -67,7 +71,7 @@ This starts:
 * API
 * Web frontend
 
-### 4. Run Database Migrations
+### 5. Run Database Migrations
 
 In another terminal, from the project root:
 
@@ -76,7 +80,7 @@ cd apps/api
 npx sequelize db:migrate
 ```
 
-### 5. Seed the Database
+### 6. Seed the Database
 
 After running the migrations:
 
@@ -86,7 +90,7 @@ npx sequelize db:seed:all
 
 This populates the database with the required test data.
 
-### 6. Open the Application
+### 7. Open the Application
 
 Open:
 
@@ -100,7 +104,7 @@ The API is available at:
 http://localhost:3000
 ```
 
-### 7. Test Account
+### 8. Test Account
 
 Use this account to test authenticated features:
 
