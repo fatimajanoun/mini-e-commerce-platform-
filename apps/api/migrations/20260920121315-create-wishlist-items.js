@@ -49,6 +49,21 @@ export default {
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
+    await queryInterface.addIndex(
+      "wishlist_items",
+      ["wishlist_id"],
+      {
+        name: "wishlist_items_wishlist_id_idx",
+      },
+    );
+
+    await queryInterface.addIndex(
+      "wishlist_items",
+      ["wishlist_id", "product_id"],
+      {
+        name: "wishlist_items_wishlist_product_idx",
+      },
+    );
   },
 
   async down(queryInterface) {

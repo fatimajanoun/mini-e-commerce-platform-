@@ -54,11 +54,18 @@ export default {
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
 
-      deleted_at:{
+      deleted_at: {
         type: Sequelize.DATE,
         allowNull: true,
       }
     });
+    await queryInterface.addIndex(
+      "variants",
+      ["product_id"],
+      {
+        name: "variants_product_id_idx",
+      },
+    );
   },
 
   async down(queryInterface) {

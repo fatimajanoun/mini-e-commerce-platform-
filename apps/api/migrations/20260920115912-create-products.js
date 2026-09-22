@@ -53,6 +53,14 @@ export default {
         allowNull: true,
       }
     });
+
+    await queryInterface.addIndex(
+      "products",
+      ["created_at"],
+      {
+        name: "products_created_at_idx",
+      },
+    );
   },
 
   async down(queryInterface) {

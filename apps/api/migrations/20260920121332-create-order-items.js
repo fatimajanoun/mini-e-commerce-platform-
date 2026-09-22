@@ -74,6 +74,13 @@ export default {
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
+    await queryInterface.addIndex(
+      "order_items",
+      ["order_id"],
+      {
+        name: "order_items_order_id_idx",
+      },
+    );
   },
 
   async down(queryInterface) {
