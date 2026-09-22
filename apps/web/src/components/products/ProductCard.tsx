@@ -3,7 +3,7 @@ import { Check, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Product } from "../../services/products";
 import { addCartItem } from "../../services/cart";
-import "../../styles/ProductCard.css";
+import "../../styles/productCard.css";
 import {
   addToWishlist,
   getWishlist,
