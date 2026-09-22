@@ -30,6 +30,11 @@ For example, a user can have a cart and wishlist, and a user can have multiple o
 
 -I added seed data for the test user and the product catalog so i can have some data to work with during development. The product seeder includes the products, their variants, and their images. I didn't seed carts, wishlists, or orders because these are created based on the user's actions while using the application.
 
+# Performance 
+
+I use Sequelize with PostgreSQL and define relationships between the different entities through the models.
+I  also added database indexes for frequently queried fields.
+
 # Notes 
 
 During development, when i needed to change the structure of a table, I sometimes undid the migration, updated the existing migration with the new columns, and ran the migration again. Since the project is still using development and seed data and has not been deployed to production, i preferred keeping the original migrations clean instead of creating a separate migration for every small schema change.
