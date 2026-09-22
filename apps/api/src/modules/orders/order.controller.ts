@@ -60,6 +60,14 @@ export const orderController = {
                     });
             }
 
+            if (message.startsWith("Not enough stock")) {
+                return reply
+                    .status(409)
+                    .send({
+                        message,
+                    });
+            }
+
             return reply
                 .status(500)
                 .send({
