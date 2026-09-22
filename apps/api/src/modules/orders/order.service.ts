@@ -34,17 +34,6 @@ export const createOrder = async (
 
                     include: [
                         {
-                            model: Product,
-                            as: "product",
-
-                            attributes: [
-                                "id",
-                                "title",
-                                "price",
-                            ],
-                        },
-
-                        {
                             model: Variant,
                             as: "variant",
                             required: false,
@@ -78,38 +67,78 @@ export const createOrder = async (
 
         let subtotal = 0;
 
-        const orderItems = cartData.items.map(
-            (item: any) => {
-                const unitPrice = Number(
-                    item.variant?.price ??
-                    item.product.price
+        const orderItems = [];
+
+        for (const item of cartData.items) {
+            const product = await Product.findByPk(
+                item.product_id,
+                {
+                    attributes: [
+                        "id",
+                        "title",
+                        "price",
+                        "stock",
+                    ],
+
+                    transaction,
+
+                    lock: transaction.LOCK.UPDATE,
+                },
+            );
+
+            if (!product) {
+                throw new Error(
+                    `Product not found: ${item.product_id}`,
                 );
+            }
 
-                const itemSubtotal =
-                    unitPrice * item.quantity;
+            const productData = product.toJSON() as {
+                id: number;
+                title: string;
+                price: number;
+                stock: number;
+            };
 
-                subtotal += itemSubtotal;
+            if (productData.stock < item.quantity) {
+                throw new Error(
+                    `Not enough stock for ${productData.title}. Only ${productData.stock} item(s) remaining.`,
+                );
+            }
 
-                return {
-                    product_id: item.product_id,
-                    variant_id: item.variant_id ?? null,
+            const unitPrice = Number(
+                item.variant?.price ??
+                productData.price
+            );
 
-                    product_title:
-                        item.product.title,
+            const itemSubtotal =
+                unitPrice * item.quantity;
 
-                    variant_name:
-                        item.variant
-                            ? `${item.variant.name}: ${item.variant.value}`
-                            : null,
+            subtotal += itemSubtotal;
 
-                    unit_price: unitPrice,
+            await product.decrement("stock", {
+                by: item.quantity,
+                transaction,
+            });
 
-                    quantity: item.quantity,
+            orderItems.push({
+                product_id: item.product_id,
+                variant_id: item.variant_id ?? null,
 
-                    subtotal: itemSubtotal,
-                };
-            },
-        );
+                product_title:
+                    productData.title,
+
+                variant_name:
+                    item.variant
+                        ? `${item.variant.name}: ${item.variant.value}`
+                        : null,
+
+                unit_price: unitPrice,
+
+                quantity: item.quantity,
+
+                subtotal: itemSubtotal,
+            });
+        }
 
         const totalAmount =
             subtotal + SHIPPING_FEE;

@@ -192,4 +192,40 @@ describe("POST /order", () => {
 
     createOrderMock.mockRestore();
   });
+
+  it("returns 409 when there is not enough stock", async () => {
+    const createOrderMock = vi
+      .spyOn(orderService, "createOrder")
+      .mockRejectedValue(
+        new Error(
+          "Not enough stock for T-Shirt. Only 2 item(s) remaining.",
+        ),
+      );
+
+    const app = Fastify();
+
+    await app.register(orderRoutes, {
+      prefix: "/order",
+    });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/order",
+      payload: {
+        name: "Fatima Jannoun",
+        phone: "70123456",
+        address: "Main Street",
+        city: "Beirut",
+      },
+    });
+
+    expect(response.statusCode).toBe(409);
+
+    expect(response.json()).toEqual({
+      message:
+        "Not enough stock for T-Shirt. Only 2 item(s) remaining.",
+    });
+
+    createOrderMock.mockRestore();
+  });
 });
