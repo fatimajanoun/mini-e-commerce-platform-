@@ -184,3 +184,26 @@ export const deleteWishlistItem = async (
 
   await item.destroy();
 };
+
+export const getWishlistCount = async (
+  userId: string,
+) => {
+  const wishlist = await Wishlist.findOne({
+    where: {
+      user_id: userId,
+    },
+    attributes: ["id"],
+  });
+
+  if (!wishlist) {
+    return 0;
+  }
+
+  const items = await WishlistItem.count({
+    where: {
+      wishlist_id: wishlist.get("id") as string,
+    },
+  });
+
+  return items;
+};

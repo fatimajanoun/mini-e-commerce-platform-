@@ -2,8 +2,9 @@ import { Heart, ShoppingBag } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import "../../styles/header.css";
 import { useEffect, useState } from "react";
-import { getWishlist } from "../../services/wishlist";
-import { getCart } from "../../services/cart";
+import { getCartCount } from "../../services/cart";
+import { getWishlistCount } from "../../services/wishlist";
+
 
 export default function Header() {
   const location = useLocation();
@@ -11,23 +12,24 @@ export default function Header() {
   const [cartCount, setCartCount] = useState(0);
 
      useEffect(() => {
-        async function loadCounts() {
-            try {
-                const [wishlist, cart] = await Promise.all([
-                    getWishlist(),
-                    getCart(),
+    async function loadCounts() {
+        try {
+            const [wishlistCount, cartCount] =
+                await Promise.all([
+                    getWishlistCount(),
+                    getCartCount(),
                 ]);
 
-                setWishlistCount(wishlist.items.length);
-                setCartCount(cart.items.length);
-            } catch {
-                setWishlistCount(0);
-                setCartCount(0);
-            }
+            setWishlistCount(wishlistCount);
+            setCartCount(cartCount);
+        } catch {
+            setWishlistCount(0);
+            setCartCount(0);
         }
+    }
 
-        loadCounts();
-    }, [location.pathname]);
+    loadCounts();
+}, [location.pathname]);
 
   return (
     <header className="site-header">

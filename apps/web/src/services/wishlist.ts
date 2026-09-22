@@ -88,3 +88,23 @@ export async function removeFromWishlist(
     );
   }
 }
+
+export async function getWishlistCount(): Promise<number> {
+  const response = await fetch(
+    `${API_URL}/wishlist/count`,
+    {
+      credentials: "include",
+    },
+  );
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result.message ||
+        "Failed to fetch wishlist count",
+    );
+  }
+
+  return result.count;
+}
