@@ -21,7 +21,7 @@ export default {
         onDelete: "CASCADE",
       },
 
-       subtotal: {
+      subtotal: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
@@ -74,6 +74,14 @@ export default {
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
+
+    await queryInterface.addIndex(
+      "orders",
+      ["user_id"],
+      {
+        name: "orders_user_id_idx",
+      },
+    );
   },
 
   async down(queryInterface) {

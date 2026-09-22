@@ -61,6 +61,21 @@ export default {
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
+    await queryInterface.addIndex(
+      "cart_items",
+      ["cart_id"],
+      {
+        name: "cart_items_cart_id_idx",
+      },
+    );
+
+    await queryInterface.addIndex(
+      "cart_items",
+      ["cart_id", "product_id", "variant_id"],
+      {
+        name: "cart_items_cart_product_variant_idx",
+      },
+    );
   },
 
   async down(queryInterface) {

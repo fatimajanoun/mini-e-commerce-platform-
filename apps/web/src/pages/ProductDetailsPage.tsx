@@ -103,9 +103,6 @@ function ProductDetailsPage() {
 
   const isOutOfStock = maxQuantity <= 0;
 
-  const hasVariants =
-    product.variants.length > 0;
-
   const handleQuantityDecrease = () => {
     setQuantity((current) => Math.max(1, current - 1));
   };

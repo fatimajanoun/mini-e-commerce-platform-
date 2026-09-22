@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Check, Heart, ShoppingBag } from "lucide-react";
+import { Check, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Product } from "../../services/products";
 import { addCartItem } from "../../services/cart";
@@ -140,7 +140,7 @@ function ProductCard({ product }: ProductCardProps) {
       <Link to={`/products/${product.slug}`} className="product-card-link">
         <div className="product-card-image">
           {product.image ? (
-            <img src={product.image.url} alt={product.title} />
+            <img src={product.image.url} alt={product.title} loading="lazy"/>
           ) : (
             <div className="product-image-placeholder">No image</div>
           )}
